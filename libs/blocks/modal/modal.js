@@ -9,9 +9,9 @@ const CLOSE_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="2
     <line x1="8" y1="8" transform="translate(10506 -3397)" fill="none" stroke="#fff" stroke-width="2"/>
   </g>
 </svg>`;
-let isInitialPageLoad = true;
 const MOBILE_MAX = 599;
 const TABLET_MAX = 1199;
+let messageAbortController;
 
 export function findDetails(hash, el) {
   const id = hash.replace('#', '');
@@ -38,6 +38,8 @@ function closeModal(modal) {
   const localeModal = id?.includes('locale-modal') ? 'localeModal' : 'milo';
   const analyticsEventName = window.location.hash ? window.location.hash.replace('#', '') : localeModal;
   const closeEventAnalytics = new Event(`${analyticsEventName}:modalClose:buttonClose`);
+  // removing the message event listener set for commerce modals
+  messageAbortController?.abort();
   sendAnalytics(closeEventAnalytics);
 
   document.querySelectorAll(`#${id}`).forEach((mod) => {
@@ -93,31 +95,26 @@ async function getPathModal(path, dialog) {
   const { default: getFragment } = await import('../fragment/fragment.js');
   await getFragment(block);
 }
+
 function sendViewportDimensionsToiFrame(source) {
   const viewportWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
   source.postMessage({ mobileMax: MOBILE_MAX, tabletMax: TABLET_MAX, viewportWidth }, '*');
 }
 
-let resizeListenerAdded = false;
-export async function sendViewportDimensionsOnRequest(messageInfo) {
-  if (messageInfo.data === 'viewportWidth') {
-    sendViewportDimensionsToiFrame(messageInfo.source);
-    const { debounce } = await import('../../utils/action.js');
-    if (!resizeListenerAdded) {
-      window.addEventListener('resize', debounce(() => sendViewportDimensionsToiFrame(messageInfo.source), 50));
-      resizeListenerAdded = true;
-    }
-  }
+export function sendViewportDimensionsOnRequest({ messageInfo, debounce }) {
+  const { data, source } = messageInfo || {};
+  if (data !== 'viewportWidth' || !source || !debounce) return;
+  sendViewportDimensionsToiFrame(source);
+  window.addEventListener('resize', debounce(() => sendViewportDimensionsToiFrame(source), 10));
 }
 
 /** For the modal height adjustment to work the following conditions must be met:
  * 1. The modal must have classes 'commerce-frame height-fit-content';
  * 2. The iframe inside must send a postMessage with the contentHeight (a number of px or '100%);
  */
-function adjustModalHeight({ contentHeight, dialogId }) {
-  if (!contentHeight || !dialogId) return;
-  const dialog = document.querySelector(`#${dialogId}`);
-  const iFrameWrapper = dialog?.querySelector('.milo-iframe.modal');
+function adjustModalHeight({ contentHeight, dialog }) {
+  if (!contentHeight || !dialog) return;
+  const iFrameWrapper = dialog.querySelector('.milo-iframe.modal');
   if (!iFrameWrapper) return;
 
   if (contentHeight === '100%') {
@@ -202,15 +199,17 @@ export async function getModal(details, custom) {
       .forEach((element) => element.setAttribute('aria-disabled', 'true'));
   }
   if (dialog.classList.contains('commerce-frame')) {
-    if (isInitialPageLoad) {
-      window.addEventListener('message', (messageInfo) => {
-        if (dialog.classList.contains('height-fit-content')) {
-          adjustModalHeight({ contentHeight: messageInfo?.data?.contentHeight, dialogId: id });
-        }
-        sendViewportDimensionsOnRequest(messageInfo);
-      });
-      isInitialPageLoad = false;
-    }
+    const { debounce } = await import('../../utils/action.js');
+    messageAbortController = new AbortController();
+    window.addEventListener('message', (messageInfo) => {
+      if (dialog.classList.contains('height-fit-content')) {
+        adjustModalHeight({ contentHeight: messageInfo?.data?.contentHeight, dialog });
+      }
+      /* If the page inside iFrame comes from another domain, it won't be able to retrieve
+      the viewport dimensions, so it sends a request to receive the viewport dimensions
+      from the parent window. */
+      sendViewportDimensionsOnRequest({ debounce, messageInfo });
+    }, { signal: messageAbortController.signal });
   }
   return dialog;
 }
