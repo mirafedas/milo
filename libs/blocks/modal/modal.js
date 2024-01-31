@@ -12,6 +12,7 @@ const CLOSE_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="2
 const MOBILE_MAX = 599;
 const TABLET_MAX = 1199;
 let messageAbortController;
+let resizeAbortController;
 
 export function findDetails(hash, el) {
   const id = hash.replace('#', '');
@@ -38,8 +39,10 @@ function closeModal(modal) {
   const localeModal = id?.includes('locale-modal') ? 'localeModal' : 'milo';
   const analyticsEventName = window.location.hash ? window.location.hash.replace('#', '') : localeModal;
   const closeEventAnalytics = new Event(`${analyticsEventName}:modalClose:buttonClose`);
-  // removing the message event listener set for commerce modals
+  // removing the 'message' and 'resize' event listener set for commerce modals
   messageAbortController?.abort();
+  resizeAbortController?.abort();
+
   sendAnalytics(closeEventAnalytics);
 
   document.querySelectorAll(`#${id}`).forEach((mod) => {
@@ -104,8 +107,9 @@ function sendViewportDimensionsToiFrame(source) {
 export function sendViewportDimensionsOnRequest({ messageInfo, debounce }) {
   const { data, source } = messageInfo || {};
   if (data !== 'viewportWidth' || !source || !debounce) return;
+  resizeAbortController = new AbortController();
   sendViewportDimensionsToiFrame(source);
-  window.addEventListener('resize', debounce(() => sendViewportDimensionsToiFrame(source), 10));
+  window.addEventListener('resize', debounce(() => sendViewportDimensionsToiFrame(source), 10), { signal: resizeAbortController.signal });
 }
 
 /** For the modal height adjustment to work the following conditions must be met:
