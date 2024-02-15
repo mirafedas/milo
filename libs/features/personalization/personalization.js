@@ -4,6 +4,7 @@ import {
   createTag, getConfig, loadLink, loadScript, localizeLink, updateConfig,
 } from '../../utils/utils.js';
 import { getEntitlementMap } from './entitlements.js';
+import { defineDelayedModalParams, decorateDelayedModalAnchor, initDelayedModal } from '../../blocks/modal/modal.js';
 
 /* c20 ignore start */
 const PHONE_SIZE = window.screen.width < 768 || window.screen.height < 768;
@@ -99,18 +100,46 @@ export const preloadManifests = ({ targetManifests = [], persManifests = [] }) =
 
 export const getFileName = (path) => path?.split('/').pop();
 
-const createFrag = (el, url, manifestId) => {
-  let href = url;
+export const parseUrl = (url) => {
+  if (!url) return {};
+  const parsed = {};
   try {
     const { pathname, search, hash } = new URL(url);
-    href = `${pathname}${search}${hash}`;
+    parsed.href = `${pathname}${search}${hash}`;
+    parsed.pathname = pathname;
+    parsed.hash = hash;
+    parsed.search = search;
   } catch {
-    // ignore
+    // if target has this format: '/fragments/somepath'
+    parsed.href = url;
   }
+  return parsed;
+};
+
+const createFrag = (el, url, manifestId) => {
+  const { href, pathname, hash, search } = parseUrl(url);
   const a = createTag('a', { href }, url);
-  if (manifestId) a.dataset.manifestId = manifestId;
-  let frag = createTag('p', undefined, a);
   const isSection = el.parentElement.nodeName === 'MAIN';
+  const {
+    delay,
+    displayMode,
+    DELAYED_MODAL_DISPLAY_MODE,
+  } = defineDelayedModalParams(search);
+  let frag = (delay && displayMode) ? a : createTag('p', undefined, a);
+
+  if (delay && displayMode) {
+    decorateDelayedModalAnchor({ a, hash, pathname });
+    initDelayedModal({
+      a,
+      delay,
+      displayMode,
+      hash,
+      contentUrl: pathname,
+      DELAYED_MODAL_DISPLAY_MODE,
+    });
+  }
+
+  if (manifestId) a.dataset.manifestId = manifestId;
   if (isSection) {
     frag = createTag('div', undefined, frag);
   }
@@ -119,9 +148,9 @@ const createFrag = (el, url, manifestId) => {
 };
 
 const COMMANDS = {
-  insertcontentafter: (el, target, manifestId) => el
+  insertcontentafter: async (el, target, manifestId) => el
     .insertAdjacentElement('afterend', createFrag(el, target, manifestId)),
-  insertcontentbefore: (el, target, manifestId) => el
+  insertcontentbefore: async (el, target, manifestId) => el
     .insertAdjacentElement('beforebegin', createFrag(el, target, manifestId)),
   removecontent: (el, target, manifestId) => {
     if (target === 'false') return;

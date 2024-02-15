@@ -221,6 +221,68 @@ export async function getModal(details, custom) {
   return dialog;
 }
 
+export async function initDelayedModal({
+  a,
+  delay,
+  displayMode,
+  hash,
+  contentUrl,
+  DELAYED_MODAL_DISPLAY_MODE,
+}) {
+  if (!a || !delay || !displayMode || !hash || !contentUrl || !DELAYED_MODAL_DISPLAY_MODE) return;
+  const details = findDetails(hash, a);
+  if (!details?.id || !details?.path) return;
+  const delayInMiliseconds = delay * 1000;
+  const { miloLibs } = getConfig();
+  const { loadLink } = await import('../../utils/utils.js');
+  loadLink(`${miloLibs}/blocks/modal/modal.css`, { rel: 'stylesheet' });
+  if (displayMode === DELAYED_MODAL_DISPLAY_MODE.oncePerPageLoad) {
+    setTimeout(() => {
+      getModal(details);
+    }, delayInMiliseconds);
+  } else if (displayMode === DELAYED_MODAL_DISPLAY_MODE.oncePerSession) {
+    if (!window.sessionStorage.getItem('wasDelayedModalShown')) {
+      setTimeout(() => {
+        getModal(details);
+        window.sessionStorage.setItem('wasDelayedModalShown', true);
+      }, delayInMiliseconds);
+    }
+  }
+}
+
+export const decorateDelayedModalAnchor = ({
+  a,
+  hash,
+  pathname,
+}) => {
+  if (!a || !hash || !pathname) return;
+  a.setAttribute('href', hash);
+  a.setAttribute('data-modal-hash', hash);
+  a.setAttribute('data-modal-path', pathname);
+  a.setAttribute('style', 'display: none');
+  a.classList.add('modal');
+  a.classList.add('link-block');
+};
+
+export const defineDelayedModalParams = (search) => {
+  if (!search) return {};
+  const DELAYED_MODAL_DISPLAY_MODE = {
+    oncePerPageLoad: 'pageload',
+    oncePerSession: 'session',
+  };
+  const urlParams = new URLSearchParams(search);
+  const delay = urlParams?.get('delay');
+  const displayMode = urlParams?.get('display');
+  const isDelayValid = delay === '1' || delay === '2' || delay === '3';
+  const isDisplayModeValid = displayMode === 'pageload' || displayMode === 'session';
+  if (!isDelayValid || !isDisplayModeValid) return undefined;
+  return {
+    delay,
+    displayMode,
+    DELAYED_MODAL_DISPLAY_MODE,
+  };
+};
+
 // Deep link-based
 export default function init(el) {
   const { modalHash } = el.dataset;
