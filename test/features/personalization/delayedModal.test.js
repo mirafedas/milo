@@ -1,7 +1,7 @@
 import { expect } from '@esm-bundle/chai';
 import { parseUrl } from '../../../libs/features/personalization/personalization.js';
 import { defineDelayedModalParams, decorateDelayedModalAnchor, initDelayedModal } from '../../../libs/blocks/modal/modal.js';
-import { waitForElement } from '../../helpers/waitfor.js';
+import { delay, waitForElement } from '../../helpers/waitfor.js';
 
 const DELAYED_MODAL_DISPLAY_MODE = {
   oncePerPageLoad: 'pageload',
@@ -73,5 +73,43 @@ it('creates and opens the delayed modal', async () => {
   expect(modalStylesLink).to.exist;
   delayedModal.remove();
   modalStylesLink.remove();
+  a.remove();
+});
+
+it('does not open a delayed modal if it should be displayed once per session and was already displayed', async () => {
+  const a = document.createElement('a');
+  window.sessionStorage.removeItem('wasDelayedModalShown');
+  decorateDelayedModalAnchor({
+    a,
+    hash,
+    pathname: '/testpage',
+  });
+  document.body.appendChild(a);
+  initDelayedModal({
+    a,
+    delay: '1',
+    displayMode: 'session',
+    hash,
+    contentUrl: '/testpage',
+    DELAYED_MODAL_DISPLAY_MODE,
+  });
+  const delayedModal = await waitForElement(hash);
+  expect(delayedModal).to.exist;
+  delayedModal.remove();
+  const modalStylesLink = window.document.head.querySelector('link[href="undefined/blocks/modal/modal.css"]');
+  modalStylesLink.remove();
+
+  initDelayedModal({
+    a,
+    delay: '1',
+    displayMode: 'session',
+    hash,
+    contentUrl: '/testpage',
+    DELAYED_MODAL_DISPLAY_MODE,
+  });
+  await delay(900);
+  expect(document.querySelector(hash)).to.not.exist;
+  const modalStylesLink2 = window.document.head.querySelector('link[href="undefined/blocks/modal/modal.css"]');
+  modalStylesLink2.remove();
   a.remove();
 });
