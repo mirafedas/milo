@@ -116,7 +116,7 @@ export const parseUrl = (url) => {
   return parsed;
 };
 
-const createFrag = (el, url, manifestId) => {
+export const createFrag = (el, url, manifestId) => {
   const { href, pathname, hash, search } = parseUrl(url);
   const a = createTag('a', { href }, url);
   const isSection = el.parentElement.nodeName === 'MAIN';

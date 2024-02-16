@@ -3,7 +3,8 @@ import { readFile } from '@web/test-runner-commands';
 import { stub } from 'sinon';
 import { getConfig, setConfig, loadBlock } from '../../../libs/utils/utils.js';
 import initFragments from '../../../libs/blocks/fragment/fragment.js';
-import { applyPers } from '../../../libs/features/personalization/personalization.js';
+import { waitForElement } from '../../helpers/waitfor.js';
+import { applyPers, createFrag } from '../../../libs/features/personalization/personalization.js';
 
 document.head.innerHTML = await readFile({ path: './mocks/metadata.html' });
 document.body.innerHTML = await readFile({ path: './mocks/personalization.html' });
@@ -29,6 +30,31 @@ describe('Functional Test', () => {
       '11111111-aaaa-bbbb-6666-cccccccccccc': 'my-special-app',
       '22222222-xxxx-bbbb-7777-cccccccccccc': 'fireflies',
     };
+  });
+
+  it('should create fragment', async () => {
+    const hash = '#testhash';
+    const parentElement = document.createElement('div');
+    const el = document.createElement('div');
+    parentElement.appendChild(el);
+    document.body.appendChild(parentElement);
+    const url = 'https://adobe.com/testpage/?delay=1&display=pageload#testhash';
+    const manifestId = 'testManifestId';
+    const frag = createFrag(el, url, manifestId);
+    expect(frag.nodeName).to.equal('A');
+    expect(frag.getAttribute('href')).to.equal(hash);
+    expect(frag.getAttribute('data-modal-hash')).to.equal(hash);
+    expect(frag.getAttribute('data-modal-path')).to.equal('/testpage/');
+    expect(frag.getAttribute('style')).to.equal('display: none');
+    expect(frag.classList.contains('modal')).to.be.true;
+    expect(frag.classList.contains('link-block')).to.be.true;
+    const delayedModal = await waitForElement(hash);
+    const modalStylesLink = window.document.head.querySelector('link[href="undefined/blocks/modal/modal.css"]');
+    expect(delayedModal).to.exist;
+    expect(modalStylesLink).to.exist;
+    delayedModal.remove();
+    modalStylesLink.remove();
+    parentElement.remove();
   });
 
   it('replaceContent should replace an element with a fragment', async () => {

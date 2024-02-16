@@ -17,6 +17,7 @@ it('parses URL properly', () => {
     pathname: '/',
     search: '',
   });
+  expect(parseUrl('/fragments/testpage')).to.deep.equal({ href: '/fragments/testpage' });
   expect(parseUrl('https://www.adobe.com/testpage/?delay=1&display=pageload#dm')).to.deep.equal({
     hash,
     href: '/testpage/?delay=1&display=pageload#dm',
