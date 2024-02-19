@@ -4,7 +4,7 @@ import { stub } from 'sinon';
 import { getConfig, setConfig, loadBlock } from '../../../libs/utils/utils.js';
 import initFragments from '../../../libs/blocks/fragment/fragment.js';
 import { waitForElement } from '../../helpers/waitfor.js';
-import { applyPers, createFrag } from '../../../libs/features/personalization/personalization.js';
+import { applyPers, createFrag, normalizePath } from '../../../libs/features/personalization/personalization.js';
 
 document.head.innerHTML = await readFile({ path: './mocks/metadata.html' });
 document.body.innerHTML = await readFile({ path: './mocks/personalization.html' });
@@ -286,5 +286,40 @@ describe('Functional Test', () => {
     expect(document.querySelector('.z-pattern')).to.not.be.null;
     await applyPers([{ manifestPath: '/mocks/manifestRemove.json' }]);
     expect(document.querySelector('.z-pattern').dataset.removedManifestId).to.not.be.null;
+  });
+});
+
+describe('normalizePath function', () => {
+  it('does not localize for US page', async () => {
+    const path = await normalizePath('https://main--milo--adobecom.hlx.page/path/to/fragment.plain.html');
+    expect(path).to.equal('/path/to/fragment.plain.html');
+  });
+
+  it('does not localize for #_dnt', async () => {
+    const path = await normalizePath('https://main--milo--adobecom.hlx.page/path/to/fragment.plain.html#_dnt');
+    expect(path).to.equal('/path/to/fragment.plain.html');
+  });
+
+  it('does not localize if fragment is already localized', async () => {
+    const path = await normalizePath('https://main--milo--adobecom.hlx.page/de/path/to/fragment.plain.html#_dnt');
+    expect(path).to.equal('/de/path/to/fragment.plain.html');
+  });
+
+  it('does not localize json', async () => {
+    const path = await normalizePath('https://main--milo--adobecom.hlx.page/path/to/manifest.json');
+    expect(path).to.equal('/path/to/manifest.json');
+  });
+
+  it('does localize otherwise', async () => {
+    const config = getConfig();
+    config.locales = {
+      de: {
+        ietf: 'de-DE',
+        prefix: '/de',
+      },
+    };
+    config.locale = config.locales.de;
+    const path = await normalizePath('https://main--milo--adobecom.hlx.page/path/to/fragment.plain.html');
+    expect(path).to.equal('/de/path/to/fragment.plain.html');
   });
 });
