@@ -30,7 +30,7 @@ export function sendViewportDimensionsToIframe({ source, origin }) {
 }
 
 export function sendViewportDimensionsOnRequest({ source, origin }) {
-  sendViewportDimensionsToIframe({ source, origin });
+  setTimeout(() => sendViewportDimensionsToIframe({ source, origin }), 1000);
   window.addEventListener('resize', debounce(() => sendViewportDimensionsToIframe({ source, origin }), 10));
 }
 
