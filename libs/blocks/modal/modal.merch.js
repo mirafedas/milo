@@ -29,18 +29,17 @@ export function sendViewportDimensionsToIframe({ source, origin }) {
   source.postMessage({ mobileMax: MOBILE_MAX, tabletMax: TABLET_MAX, viewportWidth }, origin);
 }
 
-export async function sendViewportDimensionsOnRequest({ source, origin }) {
-  await new Promise((r) => { setTimeout(() => r(true), 1000); });
+export function sendViewportDimensionsOnRequest({ source, origin }) {
   sendViewportDimensionsToIframe({ source, origin });
   window.addEventListener('resize', debounce(() => sendViewportDimensionsToIframe({ source, origin }), 10));
 }
 
-async function reactToMessage({ data, source, origin }) {
+function reactToMessage({ data, source, origin }) {
   if (data === 'viewportWidth' && source && origin) {
     /* If the page inside iframe comes from another domain, it won't be able to retrieve
     the viewport dimensions, so it sends a request to receive the viewport dimensions
     from the parent window. */
-    await sendViewportDimensionsOnRequest({ source, origin });
+    sendViewportDimensionsOnRequest({ source, origin });
   }
 
   if (data?.contentHeight) {
