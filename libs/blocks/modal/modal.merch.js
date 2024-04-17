@@ -26,14 +26,12 @@ export function adjustModalHeight(contentHeight) {
 
 export function sendViewportDimensionsToIframe({ source, origin }) {
   const viewportWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-  // eslint-disable-next-line max-len
-  setTimeout(() => source.postMessage({ mobileMax: MOBILE_MAX, tabletMax: TABLET_MAX, viewportWidth }, origin), 1000);
+  source.postMessage({ mobileMax: MOBILE_MAX, tabletMax: TABLET_MAX, viewportWidth }, origin);
 }
 
 export function sendViewportDimensionsOnRequest({ source, origin }) {
   sendViewportDimensionsToIframe({ source, origin });
-  // eslint-disable-next-line max-len
-  // window.addEventListener('resize', debounce(() => sendViewportDimensionsToIframe({ source, origin }), 10));
+  window.addEventListener('resize', debounce(() => sendViewportDimensionsToIframe({ source, origin }), 10));
 }
 
 function reactToMessage({ data, source, origin }) {
@@ -68,6 +66,7 @@ export function adjustStyles({ dialog, iframe }) {
 
 export default async function enableCommerceFrameFeatures({ dialog, iframe }) {
   if (!dialog || !iframe) return;
+  iframe.setAttribute('referrerpolicy', 'origin-when-cross-origin');
   adjustStyles({ dialog, iframe });
   window.addEventListener('message', reactToMessage);
 }
