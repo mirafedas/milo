@@ -1,6 +1,7 @@
 import { createTag, getConfig } from '../../utils/utils.js';
 import { replaceKey } from '../../features/placeholders.js';
-import '../../deps/merch-mnemonic-list.js';
+// import '../../deps/merch-mnemonic-list.js'; 
+// import '../../deps/merch-offer-select.js';
 
 /**
  * All the possible elements that can be in the subscription panel.
@@ -54,6 +55,10 @@ export default async function init(el) {
   if (recommendedFor) {
     crm.append(recommendedFor.cloneNode(true));
   }
+
+  const merchOfferSelect = createTag('merch-offer-select', { container: 'merch-crm' });
+  //@TODO: use merch-offer-select to make the offers appear in the subscription panel, and put display: none on it
+  // crm.append(merchOfferSelect);
   
   const config = getConfig();
   const [content, panel] = el.querySelectorAll(':scope > div > div');
@@ -66,7 +71,6 @@ export default async function init(el) {
       SELECTOR_SUBSCRIPTION_CHILDREN,
     ),
   );
-  console.log(subscriptionPanel);
   crm.appendChild(subscriptionPanel);
 
   // el.replaceWith(crm);
