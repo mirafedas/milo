@@ -1,4 +1,4 @@
-// branch: MWPW-154191-promo-bottom commit: 8654ae562a27e02ed0706e1c3ab44a4ca7692166 Tue, 23 Jul 2024 10:13:04 GMT
+// branch: MWPW-154191-promo-bottom commit: 8654ae562a27e02ed0706e1c3ab44a4ca7692166 Tue, 23 Jul 2024 10:55:23 GMT
 import{html as o,LitElement as te,nothing as re}from"/libs/deps/lit-all.min.js";import{LitElement as Y,html as M,css as Q}from"/libs/deps/lit-all.min.js";var h=class extends Y{static properties={size:{type:String,attribute:!0},src:{type:String,attribute:!0},alt:{type:String,attribute:!0},href:{type:String,attribute:!0}};constructor(){super(),this.size="m",this.alt=""}render(){let{href:e}=this;return e?M`<a href="${e}">
                   <img src="${this.src}" alt="${this.alt}" loading="lazy" />
               </a>`:M` <img src="${this.src}" alt="${this.alt}" loading="lazy" />`}static styles=Q`
@@ -893,6 +893,10 @@ merch-card[variant="mini-compare-chart"] [slot="body-xxs"] {
 merch-card[variant="mini-compare-chart"] [slot="promo-text"] {
     font-size: var(--consonant-merch-card-body-m-font-size);
     padding: var(--consonant-merch-spacing-xs) var(--consonant-merch-spacing-s) 0;
+}
+
+merch-card[variant="mini-compare-chart"] [slot="promo-text"] + [slot="callout-text"] {
+    margin-top: var(--consonant-merch-spacing-xs);
 }
 
 merch-card[variant="mini-compare-chart"] [slot="promo-text"] a {
