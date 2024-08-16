@@ -93,14 +93,14 @@ mods.forEach((mod) => {
   build({
     define: DEFINE,
     bundle: true,
-    banner: { js: BANNER },
+    // banner: { js: BANNER },
     entryPoints: [`./src/${mod}`],
     platform: 'browser',
     format: 'esm',
     sourcemap: false,
     legalComments: 'none',
-    target: TARGET,
-    minify: true,
+    // target: TARGET,
+    sourcemap: true,
     plugins: [rewriteImports()],
     outfile: `./dist/${mod}`,
   });
