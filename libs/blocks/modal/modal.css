@@ -301,6 +301,10 @@
     min-width: 1000px;
   }
 
+  .dialog-modal.dynamic-height {
+    height: auto;
+  }
+
   .dialog-modal.dynamic-height .milo-iframe {
     height: 100%;
   }
