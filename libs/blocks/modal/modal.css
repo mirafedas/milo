@@ -303,6 +303,7 @@
 
   .dialog-modal.dynamic-height {
     height: auto;
+    max-height: 850px;
   }
 
   .dialog-modal.dynamic-height .milo-iframe {
