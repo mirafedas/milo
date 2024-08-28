@@ -305,7 +305,7 @@
     height: 100%;
   }
 
-  .dialog-modal.commerce-frame.height-fit-content .milo-iframe {
+  .dialog-modal.commerce-frame.height-fit-content .milo-iframe, .dialog-modal.dynamic-height .milo-iframe {
     height: 100%;
     max-height: 845px;
   }
