@@ -13,10 +13,13 @@ window.addEventListener('pageshow', (event) => {
 export function adjustModalHeight(contentHeight) {
   if (!(window.location.hash || document.getElementById('checkout-link-modal'))) return;
   let selector = '#checkout-link-modal';
-  if (!/=/.test(window.location.hash)) selector = `${selector},div.dialog-modal.commerce-frame${window.location.hash}`;
+  if (!/=/.test(window.location.hash)) selector = `${selector},div.dialog-modal.height-fit-content${window.location.hash}`;
+  console.log('selector', selector);
   const dialog = document.querySelector(selector);
+  console.log('dialog', dialog);
   const iframe = dialog?.querySelector('iframe');
   const iframeWrapper = dialog?.querySelector('.milo-iframe');
+  console.log('contentHeight', contentHeight);
   if (!contentHeight || !iframe || !iframeWrapper) return;
   if (contentHeight === '100%') {
     iframe.style.height = '100%';
@@ -27,6 +30,8 @@ export function adjustModalHeight(contentHeight) {
     const clientHeight = document.documentElement.clientHeight - verticalMargins;
     if (clientHeight <= 0) return;
     const newHeight = contentHeight > clientHeight ? clientHeight : contentHeight;
+    console.log('clientHeight', clientHeight);
+    console.log('newHeight', newHeight);
     iframe.style.height = '100%';
     iframeWrapper.style.height = `${newHeight}px`;
     dialog.style.height = `${newHeight}px`;
@@ -57,16 +62,13 @@ function reactToMessage({ data, source }) {
     For this we set the iframe height to 0% in CSS to let the page inside iframe
     to measure its content height properly.
     Then we set the modal height to be the same as the content height we received.
-    For the modal height adjustment to work the following conditions must be met:
-    1. The modal must have the class 'commerce-frame';
-    2. The page inside iframe must send a postMessage with the contentHeight (in px, or '100%); */
+    For the modal height adjustment to work the page inside iframe must send a postMessage
+    with the contentHeight (in px, or '100%); */
     adjustModalHeight(data?.contentHeight);
   }
 }
 
 export function adjustStyles({ dialog, iframe }) {
-  const isAutoHeightAdjustment = /\/mini-plans\/.*mid=ft.*web=1/.test(iframe.src); // matches e.g. https://www.adobe.com/mini-plans/photoshop.html?mid=ft&web=1
-  if (isAutoHeightAdjustment) {
     dialog.classList.add('height-fit-content');
     // fail safe.
     setTimeout(() => {
@@ -75,9 +77,6 @@ export function adjustStyles({ dialog, iframe }) {
         iframe.style.height = '100%';
       }
     }, 2000);
-  } else {
-    iframe.style.height = '100%';
-  }
 }
 
 export default async function enableCommerceFrameFeatures({ dialog, iframe }) {

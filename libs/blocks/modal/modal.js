@@ -201,15 +201,18 @@ export async function getModal(details, custom) {
   }
 
   const iframe = dialog.querySelector('iframe');
-  if (iframe) {
-    if (dialog.classList.contains('commerce-frame')) {
-      const { default: enableCommerceFrameFeatures } = await import('./modal.merch.js');
-      await enableCommerceFrameFeatures({ dialog, iframe });
-    } else {
-      /* Initially iframe height is set to 0% in CSS for the height auto adjustment feature.
-      For modals without the 'commerce-frame' class height auto adjustment is not applicable */
-      iframe.style.height = '100%';
-    }
+  /* Height auto-adjustment applies only to 'Trial with Purchase' and 'What's Included' modals,
+  e.g. https://www.adobe.com/mini-plans/photoshop.html?mid=ft&web=1 
+  or https://www.adobe.com/creativecloud/whats-included/plans/cci-all-apps-whats-included.html */
+  const isAutoHeightAdjustment = /\/mini-plans\/.*mid=ft.*web=1/.test(iframe.src) 
+  || /\/creativecloud\/whats-included\//.test(iframe.src); 
+  if (iframe && isAutoHeightAdjustment) {
+    dialog.classList.add('dynamic-height');
+    const { default: enableCommerceFrameFeatures } = await import('./modal.merch.js');
+    await enableCommerceFrameFeatures({ dialog, iframe });
+  } else {
+    /* Initially iframe height is set to 0% in CSS for the height auto adjustment feature. */
+    iframe.style.height = '100%';
   }
 
   return dialog;
