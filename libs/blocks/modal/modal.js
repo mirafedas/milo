@@ -208,7 +208,7 @@ export async function getModal(details, custom) {
   const isAutoHeightAdjustment = /\/mini-plans\/.*mid=ft.*web=1/.test(iframe.src) 
   || /\/creativecloud\/whats-included\//.test(iframe.src); 
   if (iframe && isAutoHeightAdjustment) {
-    dialog.classList.add('dynamic-height');
+    // dialog.classList.add('dynamic-height');
     const { default: enableCommerceFrameFeatures } = await import('./modal.merch.js');
     await enableCommerceFrameFeatures({ dialog, iframe });
   } else {
