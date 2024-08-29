@@ -201,6 +201,7 @@ export async function getModal(details, custom) {
   }
 
   const iframe = dialog.querySelector('iframe');
+  console.log('iframe.style.height', iframe.style.height);
   /* Height auto-adjustment applies only to 'Trial with Purchase' and 'What's Included' modals,
   e.g. https://www.adobe.com/mini-plans/photoshop.html?mid=ft&web=1 
   or https://www.adobe.com/creativecloud/whats-included/plans/cci-all-apps-whats-included.html */
