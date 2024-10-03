@@ -276,15 +276,15 @@ export class MerchCardCollection extends LitElement {
     }
 
     get spActionMenu() {
-      return this.shadowRoot.querySelector('sp-action-menu');
+      return this.shadowRoot.querySelector('sp-action-menu#sortButton');
     }
 
     get authoredMenuItem() {
-      return this.spActionMenu.querySelector(`sp-menu-item[value=${SORT_ORDER.authored}]`);
+      return this.shadowRoot.querySelector(`sp-menu-item[value=${SORT_ORDER.authored}]`);
     }
 
     get alphabeticalMenuItem() {
-      return this.spActionMenu.querySelector(`sp-menu-item[value=${SORT_ORDER.alphabetical}]`);
+      return this.shadowRoot.querySelector(`sp-menu-item[value=${SORT_ORDER.alphabetical}]`);
     }
 
     get sortButton() {
