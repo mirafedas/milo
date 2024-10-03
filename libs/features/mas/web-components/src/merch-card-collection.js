@@ -192,6 +192,8 @@ export class MerchCardCollection extends LitElement {
             this.startDeeplink();
         }
         this.sidenav = document.querySelector('merch-sidenav');
+        this.spActionMenu.ariaActiveDescendantElement = [alphabeticalMenuItem];
+        console.log('alphabeticalMenuItem', alphabeticalMenuItem);
     }
 
     disconnectedCallback() {
@@ -321,6 +323,7 @@ export class MerchCardCollection extends LitElement {
         this.spActionMenu.ariaActiveDescendantElement = value === SORT_ORDER.authored 
         ? [this.authoredMenuItem] 
         : [this.alphabeticalMenuItem];
+        console.log('sortChanged', this.spActionMenu.ariaActiveDescendantElement);
         if (value === SORT_ORDER.authored) {
             pushState({ sort: undefined });
         } else {
