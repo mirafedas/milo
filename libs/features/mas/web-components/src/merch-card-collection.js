@@ -192,8 +192,8 @@ export class MerchCardCollection extends LitElement {
             this.startDeeplink();
         }
         this.sidenav = document.querySelector('merch-sidenav');
-        this.spActionMenu.ariaActiveDescendantElement = [alphabeticalMenuItem];
-        console.log('alphabeticalMenuItem', alphabeticalMenuItem);
+        this.spActionMenu.ariaActiveDescendantElement = [this.alphabeticalMenuItem];
+        console.log('alphabeticalMenuItem', this.alphabeticalMenuItem);
     }
 
     disconnectedCallback() {
