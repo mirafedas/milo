@@ -273,6 +273,18 @@ export class MerchCardCollection extends LitElement {
             : '';
     }
 
+    get spActionMenu() {
+      return this.shadowRoot.querySelector('sp-action-menu');
+    }
+
+    get authoredMenuItem() {
+      return this.spActionMenu.querySelector(`sp-menu-item[value=${SORT_ORDER.authored}]`);
+    }
+
+    get alphabeticalMenuItem() {
+      return this.spActionMenu.querySelector(`sp-menu-item[value=${SORT_ORDER.alphabetical}]`);
+    }
+
     get sortButton() {
         const sortText = getSlotText(this, 'sortText');
         const popularityText = getSlotText(this, 'popularityText');
@@ -305,20 +317,21 @@ export class MerchCardCollection extends LitElement {
         `;
     }
 
-    sortChanged(event) {
-        if (event.target.value === SORT_ORDER.authored) {
+    sortChanged({ target: { value } }) {
+        this.spActionMenu.ariaActiveDescendantElement = value === SORT_ORDER.authored 
+        ? [this.authoredMenuItem] 
+        : [this.alphabeticalMenuItem];
+        if (value === SORT_ORDER.authored) {
             pushState({ sort: undefined });
         } else {
-            pushState({ sort: event.target.value });
+            pushState({ sort: value });
         }
 
         this.dispatchEvent(
             new CustomEvent(EVENT_MERCH_CARD_COLLECTION_SORT, {
                 bubbles: true,
                 composed: true,
-                detail: {
-                    value: event.target.value,
-                },
+                detail: { value },
             }),
         );
     }
