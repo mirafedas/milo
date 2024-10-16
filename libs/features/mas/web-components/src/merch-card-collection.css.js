@@ -14,7 +14,7 @@ export const styles = css`
         display: contents;
     }
 
-    sp-action-menu, #filtersButton {
+    sp-action-menu {
       z-index: 1;
     }
 
@@ -45,6 +45,7 @@ export const styles = css`
     #filtersButton {
         width: 92px;
         margin-inline-end: var(--consonant-merch-spacing-xxs);
+        z-index: 2;
     }
 
     #sortButton {
