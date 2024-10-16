@@ -14,7 +14,7 @@ export const styles = css`
         display: contents;
     }
 
-    sp-action-menu {
+    sp-action-menu, #filtersButton {
       z-index: 1;
     }
 
