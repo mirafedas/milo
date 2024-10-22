@@ -204,6 +204,10 @@ export default async function init(el) {
   const merchCardStyles = new Promise((resolve) => {
     loadStyle(`${base}/blocks/merch-card/merch-card.css`, resolve);
   });
+  // @TODO: make this load only for Safari iOS 16 and lower
+  const swcStylesForIos16 = new Promise((resolve) => {
+    loadStyle(`${base}/features/spectrum-web-components/medium-light-styles.css`, resolve);
+  });
 
   let cardsData;
   try {
@@ -315,7 +319,7 @@ export default async function init(el) {
   );
   const overrides = await overrideCards(cardsRoot, overridePromises, config);
   await initMerchCards(attributes.filtered, preferences, cardsRoot);
-  await Promise.all([merchStyles, merchCardStyles, ...deps]);
+  await Promise.all([merchStyles, merchCardStyles, swcStylesForIos16, ...deps]);
 
   merchCardCollection.append(...cardsRoot.children);
 

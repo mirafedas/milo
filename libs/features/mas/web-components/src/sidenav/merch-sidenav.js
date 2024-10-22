@@ -26,6 +26,7 @@ export class MerchSideNav extends LitElement {
         css`
             :host {
                 display: block;
+                z-index: 3;
             }
 
             :host(:not([modal])) {
