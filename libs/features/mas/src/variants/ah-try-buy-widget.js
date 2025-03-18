@@ -124,4 +124,6 @@ export class AHTryBuyWidget extends VariantLayout {
   `;
 }
 
-customElements.define('ah-try-buy-widget', AHTryBuyWidget);
+if (!customElements.get('ah-try-buy-widget')) {
+  customElements.define('ah-try-buy-widget', AHTryBuyWidget);
+}
