@@ -281,8 +281,9 @@ export async function fetchEntitlements() {
 }
 
 export async function fetchCheckoutLinkConfigs(base = '') {
+  console.log('using draft config for checkout-link');
   fetchCheckoutLinkConfigs.promise = fetchCheckoutLinkConfigs.promise
-    ?? fetch(`${base}${CHECKOUT_LINK_CONFIG_PATH}`).catch((e) => {
+    ?? fetch('http://localhost:6456/drafts/mirafedas/checkout-link-miras-copy.json').catch((e) => {
       log?.error('Failed to fetch checkout link configs', e);
     }).then((mappings) => {
       if (!mappings?.ok) return { data: [] };
