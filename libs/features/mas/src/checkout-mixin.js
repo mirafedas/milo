@@ -162,10 +162,10 @@ export function CheckoutMixin(Base) {
             } else {
               newUrl.searchParams.set('af', 'uc_new_user_iframe,uc_new_system_close');
               newUrl.searchParams.set('cli', 'mini_plans');
-              if (marketSegments.includes('EDU')) {
+              if (customerSegment === 'INDIVIDUAL' && marketSegments.includes('EDU')) {
                 newUrl.searchParams.set('ms', 'e');
               }
-              if (customerSegment === 'TEAM') {
+              if (customerSegment === 'TEAM' && marketSegments.includes('COM')) {
                 newUrl.searchParams.set('cs', 't');
               }
             }
