@@ -4,6 +4,7 @@ import {
 import { replaceKey } from '../../features/placeholders.js';
 
 export const CHECKOUT_LINK_CONFIG_PATH = '/commerce/checkout-link.json'; // relative to libs.
+export const CHECKOUT_LINK_SANDBOX_CONFIG_PATH = '/commerce/checkout-link-sandbox.json'; // relative to libs.
 
 export const PRICE_TEMPLATE_DISCOUNT = 'discount';
 export const PRICE_TEMPLATE_OPTICAL = 'optical';
@@ -211,7 +212,7 @@ export const CC_SINGLE_APPS_ALL = CC_SINGLE_APPS.flatMap((item) => item);
 export const CC_ALL_APPS = ['CC_ALL_APPS',
   'CC_ALL_APPS_STOCK_BUNDLE', 'CC_PRO'];
 
-const NAME_LOCALE = 'LOCALE';
+const NAME_LOCALES = 'LOCALES';
 const NAME_PRODUCT_FAMILY = 'PRODUCT_FAMILY';
 const FREE_TRIAL_PATH = 'FREE_TRIAL_PATH';
 const BUY_NOW_PATH = 'BUY_NOW_PATH';
@@ -280,9 +281,13 @@ export async function fetchEntitlements() {
   return fetchEntitlements.promise;
 }
 
-export async function fetchCheckoutLinkConfigs(base = '') {
+export async function fetchCheckoutLinkConfigs(base = '', env = '') {
+  const params = new URLSearchParams(window.location.search);
+  const path = params.get('checkout-link-sandbox') === 'on' && env !== 'prod'
+    ? `${base}${CHECKOUT_LINK_SANDBOX_CONFIG_PATH}`
+    : `${base}${CHECKOUT_LINK_CONFIG_PATH}`;
   fetchCheckoutLinkConfigs.promise = fetchCheckoutLinkConfigs.promise
-    ?? fetch(`${base}${CHECKOUT_LINK_CONFIG_PATH}`).catch((e) => {
+    ?? fetch(path).catch((e) => {
       log?.error('Failed to fetch checkout link configs', e);
     }).then((mappings) => {
       if (!mappings?.ok) return { data: [] };
@@ -293,11 +298,12 @@ export async function fetchCheckoutLinkConfigs(base = '') {
 
 export async function getCheckoutLinkConfig(productFamily, productCode, paCode) {
   let { base } = getConfig();
+  const { env } = getConfig();
   if (/\.page$/.test(document.location.origin)) {
     /* c8 ignore next 2 */
     base = base.replace('.live', '.page');
   }
-  const checkoutLinkConfigs = await fetchCheckoutLinkConfigs(base);
+  const checkoutLinkConfigs = await fetchCheckoutLinkConfigs(base, env);
   if (!checkoutLinkConfigs.data.length) return undefined;
   const { locale: { region } } = getConfig();
 
@@ -324,10 +330,10 @@ export async function getCheckoutLinkConfig(productFamily, productCode, paCode) 
 
   if (!productCheckoutLinkConfigs.length) return undefined;
   const checkoutLinkConfig = productCheckoutLinkConfigs.find(
-    ({ [NAME_LOCALE]: locale }) => locale === '',
+    ({ [NAME_LOCALES]: locales }) => locales === '' || locales === '#N/A',
   );
   const checkoutLinkConfigOverride = productCheckoutLinkConfigs.find(
-    ({ [NAME_LOCALE]: locale }) => locale === region,
+    ({ [NAME_LOCALES]: locales }) => locales?.includes(region),
   ) ?? {};
   const overrides = Object.fromEntries(
     Object.entries(checkoutLinkConfigOverride).filter(([, value]) => value),
