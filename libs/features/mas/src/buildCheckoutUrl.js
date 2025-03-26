@@ -145,14 +145,19 @@ export function buildCheckoutUrl(checkoutData, modalType) {
   if (modalType === 'crm') {
     url.searchParams.set('af', 'uc_segmentation_hide_tabs,uc_new_user_iframe,uc_new_system_close');
     url.searchParams.set('cli', 'creative');
+    url.searchParams.set('rtc', 't');
   } else if (modalType === 'twp' || modalType === 'd2p') {
     url.searchParams.set('af', 'uc_new_user_iframe,uc_new_system_close');
     url.searchParams.set('cli', 'mini_plans');
+    url.searchParams.set('rtc', 't');
     if (customerSegment === 'INDIVIDUAL' && marketSegment === 'EDU') {
       url.searchParams.set('ms', 'e');
     }
     if (customerSegment === 'TEAM' && marketSegment === 'COM') {
       url.searchParams.set('cs', 't');
+    }
+    if (modalType && new URLSearchParams(window.location.search).get('commerce-stg') === 'on') {
+      url.hostname = url.hostname.replace('commerce', 'commerce-stg');
     }
   }
   return url.toString();

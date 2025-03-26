@@ -213,6 +213,7 @@ export const CC_ALL_APPS = ['CC_ALL_APPS',
   'CC_ALL_APPS_STOCK_BUNDLE', 'CC_PRO'];
 
 const NAME_LOCALE = 'LOCALE';
+const NAME_LOCALES = 'LOCALES';
 const NAME_PRODUCT_FAMILY = 'PRODUCT_FAMILY';
 const FREE_TRIAL_PATH = 'FREE_TRIAL_PATH';
 const BUY_NOW_PATH = 'BUY_NOW_PATH';
@@ -223,6 +224,7 @@ const LOADING_ENTITLEMENTS = 'loading-entitlements';
 
 let log;
 let upgradeOffer = null;
+let useCheckoutLinkSandbox = false;
 
 /**
  * Given a url, calculates the hostname of MAS platform.
@@ -283,7 +285,8 @@ export async function fetchEntitlements() {
 
 export async function fetchCheckoutLinkConfigs(base = '', env = '') {
   const params = new URLSearchParams(window.location.search);
-  const path = params.get('checkout-link-sandbox') === 'on' && env !== 'prod'
+  useCheckoutLinkSandbox = params.get('checkout-link-sandbox') === 'on' && env !== 'prod';
+  const path = useCheckoutLinkSandbox
     ? `${base}${CHECKOUT_LINK_SANDBOX_CONFIG_PATH}`
     : `${base}${CHECKOUT_LINK_CONFIG_PATH}`;
   fetchCheckoutLinkConfigs.promise = fetchCheckoutLinkConfigs.promise
@@ -329,12 +332,24 @@ export async function getCheckoutLinkConfig(productFamily, productCode, paCode) 
   ];
 
   if (!productCheckoutLinkConfigs.length) return undefined;
-  const checkoutLinkConfig = productCheckoutLinkConfigs.find(
-    ({ [NAME_LOCALE]: locale }) => locale === '',
-  );
-  const checkoutLinkConfigOverride = productCheckoutLinkConfigs.find(
-    ({ [NAME_LOCALE]: locale }) => locale === region,
-  ) ?? {};
+  let checkoutLinkConfig;
+  let checkoutLinkConfigOverride;
+  if (useCheckoutLinkSandbox) {
+    checkoutLinkConfig = productCheckoutLinkConfigs.find(
+      ({ [NAME_LOCALES]: locales }) => locales === '' || locales === '#N/A',
+    );
+    checkoutLinkConfigOverride = productCheckoutLinkConfigs.find(
+      ({ [NAME_LOCALES]: locales }) => locales?.includes(region),
+    ) ?? {};
+  } else {
+    checkoutLinkConfig = productCheckoutLinkConfigs.find(
+      ({ [NAME_LOCALE]: locale }) => locale === '',
+    );
+    checkoutLinkConfigOverride = productCheckoutLinkConfigs.find(
+      ({ [NAME_LOCALE]: locale }) => locale === region,
+    ) ?? {};
+  }
+
   const overrides = Object.fromEntries(
     Object.entries(checkoutLinkConfigOverride).filter(([, value]) => value),
   );
