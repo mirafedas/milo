@@ -121,6 +121,21 @@ export async function getModal(details, custom) {
 
   if (custom) getCustomModal(custom, dialog);
   if (details) await getPathModal(details.path, dialog);
+
+  const iframe = dialog.querySelector('iframe');
+  if (iframe) {
+    if (dialog.classList.contains('commerce-frame') || dialog.classList.contains('dynamic-height')) {
+      const { default: enableCommerceFrameFeatures } = await import('./modal.merch.js');
+      await enableCommerceFrameFeatures({ dialog, iframe });
+    } else {
+      /* Initially iframe height is set to 0% in CSS for the height auto adjustment feature.
+      The height auto adjustment feature is applicable only to dialogs
+      with the `commerce-frame` or `dynamic-height` classes */
+      iframe.style.height = '100%';
+    }
+    if (!custom?.closeEvent) dialog.addEventListener('iframe:modal:closed', () => closeModal(dialog));
+  }
+
   if (isDelayedModal) {
     dialog.classList.add('delayed-modal');
     const mediaBlock = dialog.querySelector('div.media');
@@ -199,21 +214,6 @@ export async function getModal(details, custom) {
     [...document.querySelectorAll('header, main, footer')]
       .forEach((element) => element.setAttribute('aria-disabled', 'true'));
   }
-
-  const iframe = dialog.querySelector('iframe');
-  if (iframe) {
-    if (dialog.classList.contains('commerce-frame') || dialog.classList.contains('dynamic-height')) {
-      const { default: enableCommerceFrameFeatures } = await import('./modal.merch.js');
-      await enableCommerceFrameFeatures({ dialog, iframe });
-    } else {
-      /* Initially iframe height is set to 0% in CSS for the height auto adjustment feature.
-      The height auto adjustment feature is applicable only to dialogs
-      with the `commerce-frame` or `dynamic-height` classes */
-      iframe.style.height = '100%';
-    }
-    if (!custom?.closeEvent) dialog.addEventListener('iframe:modal:closed', () => closeModal(dialog));
-  }
-
   return dialog;
 }
 
