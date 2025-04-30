@@ -3,6 +3,7 @@ import { createTag, getConfig } from '../../utils/utils.js';
 import { replaceKeyArray } from '../../features/placeholders.js';
 import '../../features/spectrum-web-components/dist/theme.js';
 import '../../features/spectrum-web-components/dist/progress-circle.js';
+import { EVENT_MERCH_ADDON_AND_QUANTITY_UPDATE } from '../../features/mas/src/constants.js';
 
 export const MSG_SUBTYPE = {
   AppLoaded: 'AppLoaded',
@@ -70,10 +71,12 @@ export const handle3in1IFrameEvents = ({ data: msgData }) => {
   }
   const { app, subType, data } = parsedMsg || {};
   if (app !== 'ucv3') return;
-  window.lana?.log(`3-in-1 modal: ${subType}`, data, LANA_OPTIONS);
+  window.lana?.log(`3-in-1 modal: ${subType}, data: ${JSON.stringify(data)}`);
   const threeInOne = document.querySelector('.three-in-one');
   const closeBtn = threeInOne?.querySelector('.dialog-close');
   const iframe = threeInOne?.querySelector('iframe');
+  const id = threeInOne?.getAttribute('data-id');
+  const relatedMerchCard = document.querySelector(`merch-card[id="${id}"]`);
   if (!threeInOne) return;
   switch (subType) {
     case MSG_SUBTYPE.AppLoaded:
@@ -93,7 +96,14 @@ export const handle3in1IFrameEvents = ({ data: msgData }) => {
       }
       break;
     case MSG_SUBTYPE.Close:
-      document.querySelector('.dialog-modal.three-in-one')?.dispatchEvent(new Event('closeModal'));
+      if (data?.actionRequired && data?.actionUrl) {
+        window.open(data.actionUrl);
+      }
+      relatedMerchCard?.dispatchEvent(new CustomEvent(
+        EVENT_MERCH_ADDON_AND_QUANTITY_UPDATE,
+        { detail: { id, items: data?.state?.cart?.items } },
+      ));
+      threeInOne?.dispatchEvent(new Event('closeModal'));
       window.removeEventListener('message', handle3in1IFrameEvents);
       break;
     default:
