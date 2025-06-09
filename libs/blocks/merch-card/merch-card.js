@@ -516,6 +516,12 @@ const decorateFooterRows = async (merchCard, footerRows) => {
       }
     });
 
+    if (!isMobile) {
+      const hrElem = createTag('hr', { style: 'background: #E8E8E8' });
+      footerRowsSlot.appendChild(hrElem);
+      merchCard.classList.add('has-divider');
+    }
+
     const merchCardHeading = merchCard.querySelector('h3')?.id;
     if (merchCardHeading) {
       ulContainer.setAttribute('id', `${merchCardHeading}-list`);

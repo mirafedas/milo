@@ -56,6 +56,12 @@ export const CSS = `
     line-height: var(--consonant-merch-card-heading-xs-line-height);
   }
 
+  merch-card[variant="mini-compare-chart"].bullet-list [slot='heading-m-price'] {
+    padding: 0 var(--consonant-merch-spacing-xs);
+    font-size: var(--consonant-merch-card-body-xxl-font-size);
+    line-height: var(--consonant-merch-card-body-s-line-height);
+  }
+
   merch-card[variant="mini-compare-chart"] [slot="body-m"] {
     padding: var(--consonant-merch-spacing-xs) var(--consonant-merch-spacing-s);
   }
@@ -156,7 +162,7 @@ export const CSS = `
     font-color: var(--merch-color-grey-80);
     font-weight: 700;
     line-height: var(--consonant-merch-card-body-xs-line-height);
-    font-size: var(--consonant-merch-card-body-s-font-size);
+    font-size: var(--consonant-merch-card-body-xs-font-size);
   }
 
   merch-card[variant="mini-compare-chart"] .footer-row-cell {
@@ -191,11 +197,6 @@ export const CSS = `
     font-size: var(--consonant-merch-card-body-xs-font-size);
     font-weight: 400;
     line-height: var(--consonant-merch-card-body-xs-line-height);
-  }
-
-  merch-card[variant="mini-compare-chart"] .footer-row-cell-description {
-    font-size: var(--consonant-merch-card-body-s-font-size);
-    line-height: var(--consonant-merch-card-body-s-line-height);
   }
 
   merch-card[variant="mini-compare-chart"] .footer-row-cell-description p {
@@ -274,9 +275,9 @@ export const CSS = `
     line-height: var(--consonant-merch-card-body-xs-line-height);
   }
 
-  merch-card[variant="mini-compare-chart"] .footer-row-cell-description {
-    font-size: var(--consonant-merch-card-body-xs-font-size);
-    line-height: var(--consonant-merch-card-body-xs-line-height);
+  merch-card[variant="mini-compare-chart"].bullet-list .footer-row-cell-description {
+    font-size: var(--consonant-merch-card-body-s-font-size);
+    line-height: var(--consonant-merch-card-body-s-line-height);
   }
 
   merch-card[variant="mini-compare-chart"] merch-addon {
@@ -325,6 +326,11 @@ export const CSS = `
     background-color: var(--consonant-merch-card-card-mini-compare-mobile-background-color);
     border-radius: 0 0 var(--consonant-merch-spacing-xxs) var(--consonant-merch-spacing-xxs);
   }
+
+  merch-card[variant="mini-compare-chart"].bullet-list .footer-rows-title {
+    line-height: var(--consonant-merch-card-body-s-line-height);
+    font-size: var(--consonant-merch-card-body-s-font-size);
+  }
 }
 
 @media screen and ${TABLET_DOWN} {
@@ -347,16 +353,6 @@ export const CSS = `
     font-size: var(--consonant-merch-card-body-xs-font-size);
     line-height: var(--consonant-merch-card-body-xs-line-height);
   }
-  
-  merch-card[variant="mini-compare-chart"] .footer-row-cell-description {
-    font-size: var(--consonant-merch-card-body-xs-font-size);
-    line-height: var(--consonant-merch-card-body-xs-line-height);
-  }
-
-  merch-card[variant="mini-compare-chart"].bullet-list .footer-row-cell-description {
-    font-size: var(--consonant-merch-card-body-s-font-size);
-    line-height: var(--consonant-merch-card-body-s-line-height);
-  }
 }
 @media screen and ${TABLET_UP} {
   :root {
@@ -372,6 +368,11 @@ export const CSS = `
   .three-merch-cards.mini-compare-chart,
   .four-merch-cards.mini-compare-chart {
       grid-template-columns: repeat(2, minmax(var(--consonant-merch-card-mini-compare-chart-width), var(--consonant-merch-card-mini-compare-chart-wide-width)));
+  }
+
+  merch-card[variant="mini-compare-chart"].bullet-list .footer-row-cell-description {
+    font-size: var(--consonant-merch-card-body-xs-font-size);
+    line-height: var(--consonant-merch-card-body-xs-line-height);
   }
 }
 
@@ -394,6 +395,11 @@ export const CSS = `
   .four-merch-cards.mini-compare-chart {
     grid-template-columns: repeat(3, var(--consonant-merch-card-mini-compare-chart-width));
     gap: var(--consonant-merch-spacing-m);
+  }
+
+  merch-card[variant="mini-compare-chart"].bullet-list .footer-row-cell-description {
+    font-size: var(--consonant-merch-card-body-s-font-size);
+    line-height: var(--consonant-merch-card-body-s-line-height);
   }
 }
 
