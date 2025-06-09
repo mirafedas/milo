@@ -361,6 +361,8 @@ describe('Mini Compare Chart Merch Card', () => {
     expect(footerRowCellCheckmark).to.exist;
     for (let i = 0; i < footerRowCellCheckmark.length; i += 1) {
       expect(footerRowCellCheckmark[i].querySelector('.footer-row-icon-checkmark')).to.exist;
+      const img = footerRowCellCheckmark[i].querySelector('picture img');
+      expect(img.getAttribute('loading')).to.not.exist;
     }
 
     // Test for the second merch card (open state)

@@ -487,6 +487,7 @@ const createFooterRowCell = (row, isCheckmark) => {
   const footerRowCell = createTag('li', { class: footerRowCellClass });
 
   if (rowIcon) {
+    rowIcon.querySelector('img')?.removeAttribute('loading');
     rowIcon.classList.add(footerRowIconClass);
     footerRowCell.appendChild(rowIcon);
   }
