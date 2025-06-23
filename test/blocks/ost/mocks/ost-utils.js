@@ -91,7 +91,6 @@ function mockOstDeps({ failStatus = false, failMetadata = false, mockToken, over
     if (value) url.searchParams.set(key, value);
   });
   window.history.replaceState({}, '', url);
-  console.log(555);
 
   document.body.innerHTML = '<main><div class="ost"><div /></div></main>';
 
@@ -105,7 +104,6 @@ function unmockOstDeps() {
   delete window.adobeid;
   delete window.adobeIMS;
   window.fetch = ogFetch;
-  console.log(666);
 
   window.history.replaceState({}, '', ogUrl);
 }
