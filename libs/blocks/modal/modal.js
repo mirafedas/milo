@@ -54,28 +54,24 @@ export function closeModal(modal) {
   const closeEvent = new Event('milo:modal:closed');
   window.dispatchEvent(closeEvent);
 
-  // TODO: remove after testing!!!
-  const originalPushState = window.history.pushState;
-  window.history.pushState = function (...args) {
-    console.trace('pushState called:', ...args);
-    return originalPushState.apply(this, args);
-  };
-
-  // TODO: remove after testing!!!
-  const originalReplaceState = window.history.replaceState;
-  window.history.replaceState = function (...args) {
-    console.trace('replaceState called:', ...args);
-    return originalReplaceState.apply(this, args);
-  };
-
-  // TODO: remove after testing!!!
   window.addEventListener('popstate', (event) => {
     console.log('popstate called:', event);
-  });
-
-  // TODO: remove after testing!!!
-  window.addEventListener('hashchange', (event) => {
-    console.log('hashchange called:', event);
+    const originalPushState = window.history.pushState;
+    window.history.pushState = function (...args) {
+      console.trace('pushState called:', ...args);
+      return originalPushState.apply(this, args);
+    };
+    const originalReplaceState = window.history.replaceState;
+    window.history.replaceState = function (...args) {
+      console.trace('replaceState called:', ...args);
+      return originalReplaceState.apply(this, args);
+    };
+    window.addEventListener('popstate', (event) => {
+      console.log('popstate called:', event);
+    });
+    window.addEventListener('hashchange', (event) => {
+      console.log('hashchange called:', event);
+    });
   });
 
   document.querySelectorAll(`#${id}`).forEach((mod) => {
