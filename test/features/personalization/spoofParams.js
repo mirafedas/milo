@@ -9,5 +9,5 @@ export default function spoofParams(params) {
   }
   console.log(777);
 
-  // window.history.pushState({}, '', url);
+  window.history.pushState({}, '', url);
 }
