@@ -53,27 +53,6 @@ export function closeModal(modal) {
   const { id } = modal;
   const closeEvent = new Event('milo:modal:closed');
   window.dispatchEvent(closeEvent);
-
-  window.addEventListener('popstate', (event) => {
-    console.log('popstate called:', event);
-    const originalPushState = window.history.pushState;
-    window.history.pushState = function (...args) {
-      console.trace('pushState called:', ...args);
-      return originalPushState.apply(this, args);
-    };
-    const originalReplaceState = window.history.replaceState;
-    window.history.replaceState = function (...args) {
-      console.trace('replaceState called:', ...args);
-      return originalReplaceState.apply(this, args);
-    };
-    window.addEventListener('popstate', (event) => {
-      console.log('popstate called:', event);
-    });
-    window.addEventListener('hashchange', (event) => {
-      console.log('hashchange called:', event);
-    });
-  });
-
   document.querySelectorAll(`#${id}`).forEach((mod) => {
     if (mod.classList.contains('dialog-modal')) {
       const modalCurtain = document.querySelector(`#${id}~.modal-curtain`);
