@@ -107,7 +107,7 @@ function unmockOstDeps() {
   window.fetch = ogFetch;
   console.log(666);
 
-  window.history.replaceState({}, '', ogUrl);
+  // window.history.replaceState({}, '', ogUrl);
 }
 
 const customFetch = window.fetch;
