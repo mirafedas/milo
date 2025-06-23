@@ -142,7 +142,9 @@ const App = ({
         const userSelectionStringEncoded = encodeURIComponent(userSelectionString);
         const cleanURL = window.location.href.split('?')[0];
         const debugURL = `${cleanURL}?debug-results=${userSelectionStringEncoded}`;
-        window.history.replaceState('', '', debugURL);
+        console.log(444);
+
+        // window.history.replaceState('', '', debugURL);
         navigator.clipboard.writeText(debugURL).then(() => {
           // eslint-disable-next-line no-console
           console.log(debugURL);

@@ -145,7 +145,9 @@ export async function loadOstEnv() {
   }
   const search = searchParameters.toString();
   const newURL = `//${window.location.host}${window.location.pathname}${search ? `?${search}` : ''}`;
-  window.history.replaceState({}, null, newURL);
+  console.log(333);
+
+  // window.history.replaceState({}, null, newURL);
 
   const environment = searchParameters.get('env') ?? WCS_ENV;
   const landscape = searchParameters.get('wcsLandscape') ?? WCS_LANDSCAPE;

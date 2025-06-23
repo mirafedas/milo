@@ -875,7 +875,8 @@ function subscribeToSearchCriteriaChanges() {
   document.addEventListener(SEARCH_CRITERIA_CHANGE_EVENT, (el) => {
     // clear url of search params - might need to enable later
     if (document.location.search) {
-      window.history.pushState({}, document.title, `${document.location.origin}${document.location.pathname}`);
+      console.log(111);
+      // window.history.pushState({}, document.title, `${document.location.origin}${document.location.pathname}`);
     }
 
     const searchCriteria = JSON.stringify(el?.detail || {});

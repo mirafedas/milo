@@ -7,5 +7,7 @@ export default function spoofParams(params) {
     }
     url.searchParams.set(key, value);
   }
-  window.history.pushState({}, '', url);
+  console.log(777);
+
+  // window.history.pushState({}, '', url);
 }
