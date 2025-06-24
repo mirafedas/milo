@@ -579,7 +579,7 @@ export async function openModal(e, url, offerType, hash, extraOptions, el) {
     window.location.hash = hash;
     window.addEventListener('milo:modal:closed', () => {
       console.log('merch.js uncommented', window.history.state, prevHash);
-      window.history.pushState(window.history.state, document.title, prevHash !== '' && `#${prevHash}`);
+      window.history.pushState(window.history.state, document.title, prevHash !== '' ? `#${prevHash}` : undefined);
     }, { once: true });
   }
 
