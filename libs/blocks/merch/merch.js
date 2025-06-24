@@ -579,7 +579,9 @@ export async function openModal(e, url, offerType, hash, extraOptions, el) {
     window.location.hash = hash;
     window.addEventListener('milo:modal:closed', () => {
       console.log('uncommented in merch');
-      window.history.pushState({}, document.title, prevHash !== '' ? `#${prevHash}` : `${window.location.pathname}${window.location.search}`);
+      // eslint-disable-next-line
+      // window.history.pushState({}, document.title, prevHash !== '' ? `#${prevHash}` : `${window.location.pathname}${window.location.search}`);
+      window.history.replaceState({}, document.title, prevHash !== '' ? `#${prevHash}` : `${window.location.pathname}${window.location.search}`);
     }, { once: true });
   }
 
