@@ -72,9 +72,8 @@ export function closeModal(modal) {
     .forEach((element) => element.removeAttribute('aria-disabled'));
 
   const hashId = window.location.hash.replace('#', '');
-  console.log(222, 'uncommented');
-
-  if (hashId === modal.id) window.history.pushState('', document.title, `${window.location.pathname}${window.location.search}`);
+  console.log('modal.js uncommented');
+  if (hashId === modal.id) window.history.pushState(window.history.state, document.title, `${window.location.pathname}${window.location.search}`);
   isDelayedModal = false;
   if (prevHash) {
     window.location.hash = prevHash;
