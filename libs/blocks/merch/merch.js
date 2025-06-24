@@ -578,8 +578,8 @@ export async function openModal(e, url, offerType, hash, extraOptions, el) {
     const prevHash = window.location.hash.replace('#', '') === hash ? '' : window.location.hash;
     window.location.hash = hash;
     window.addEventListener('milo:modal:closed', () => {
-      console.log('merch.js uncommented', window.history.state);
-      window.history.pushState(window.history.state, document.title, prevHash !== '' ? `#${prevHash}` : `${window.location.pathname}${window.location.search}`);
+      console.log('merch.js uncommented 1', window.history.state, prevHash);
+      window.history.pushState(window.history.state, document.title, prevHash !== '' && `#${prevHash}`);
     }, { once: true });
   }
 
