@@ -78,6 +78,7 @@ Make sure you ran `npm install` in the project root.
 You might need also to run `npx playwright install`.
 Nala tests are run using the `npm run nala <env> [options]` command:
 
+my test string
 ```sh
 npm run nala <env> [options]
 ```
