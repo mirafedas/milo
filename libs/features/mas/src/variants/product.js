@@ -57,7 +57,7 @@ export class Product extends VariantLayout {
 
     connectedCallbackHook() {
         window.addEventListener('resize', this.postCardUpdateHook);
-        window.addEventListener(
+        this.card.addEventListener(
           EVENT_MERCH_QUANTITY_SELECTOR_CHANGE,
           this.updatePriceQuantity,
       );
@@ -65,7 +65,7 @@ export class Product extends VariantLayout {
 
     disconnectedCallbackHook() {
         window.removeEventListener('resize', this.postCardUpdateHook);
-        window.removeEventListener(
+        this.card.removeEventListener(
           EVENT_MERCH_QUANTITY_SELECTOR_CHANGE,
           this.updatePriceQuantity,
       );

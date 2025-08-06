@@ -13,14 +13,14 @@ export class MiniCompareChart extends VariantLayout {
   }
 
   connectedCallbackHook() {
-    window.addEventListener(
+    this.card.addEventListener(
       EVENT_MERCH_QUANTITY_SELECTOR_CHANGE,
       this.updatePriceQuantity,
   );
 }
 
 disconnectedCallbackHook() {
-    window.removeEventListener(
+    this.card.removeEventListener(
       EVENT_MERCH_QUANTITY_SELECTOR_CHANGE,
       this.updatePriceQuantity,
   );
