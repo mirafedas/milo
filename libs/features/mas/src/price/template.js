@@ -194,6 +194,7 @@ const createPriceTemplate =
             literals: priceLiterals = {},
             quantity = 1,
             space = false, // add a space between price literals
+            isPromoApplied = false,
         } = {},
         {
             commitment,
@@ -230,10 +231,13 @@ const createPriceTemplate =
 
         const locale = `${language.toLowerCase()}-${country.toUpperCase()}`;
 
-        const displayPrice =
+        let displayPrice =
             displayStrikethrough && priceWithoutDiscount
                 ? priceWithoutDiscount
                 : price;
+        if (promotion &&!isPromoApplied && priceWithoutDiscount) {
+            displayPrice = priceWithoutDiscount;
+        }
 
         let method = displayOptical ? formatOpticalPrice : formatRegularPrice;
         if (displayAnnual) {
@@ -384,13 +388,17 @@ const createPriceTemplate =
  * or outdated promotion), or concatenation of new & old prices, old being stroke through.
  */
 const createPromoPriceTemplate = () => (context, value, attributes) => {
+    const isPromoApplied = value.promotion?.displaySummary?.minProductQuantity && 
+    value.promotion.displaySummary.minProductQuantity <= (context.quantity?.[0] || 1);
     const displayOldPrice =
         context.displayOldPrice === undefined ||
         toBoolean(context.displayOldPrice);
     const shouldDisplayOldPrice =
         displayOldPrice &&
         value.priceWithoutDiscount &&
-        value.priceWithoutDiscount != value.price;
+        value.priceWithoutDiscount != value.price &&
+        (!value.promotion || isPromoApplied);
+    context.isPromoApplied = isPromoApplied;
     return `${shouldDisplayOldPrice
         ? createPriceTemplate({
           displayStrikethrough: true,
