@@ -26,9 +26,10 @@ const getAnnualPrice = (price) => price * 12;
  * @param {number} promotion.displaySummary.minProductQuantity - The minimum product quantity for the promotion.
  * @param {string} promotion.displaySummary.outcomeType - The outcome type of the promotion.
  * @param {string} [instant] - An optional date string to use as the current date. If not provided, the current date is used.
+ * @param {number} quantity - The quantity of the product.
  * @returns {boolean} - Returns true if the promotion is active, false otherwise.
  */
-const isPromotionActive = (promotion, instant) => {
+const isPromotionActive = (promotion, instant, quantity) => {
     const {
         start,
         end,
@@ -40,6 +41,9 @@ const isPromotionActive = (promotion, instant) => {
         } = {},
     } = promotion;
     if (!(amount && duration && outcomeType && minProductQuantity)) {
+        return false;
+    }
+    if (quantity < minProductQuantity) {
         return false;
     }
     const now = instant ? new Date(instant) : new Date();
@@ -335,10 +339,7 @@ const formatAnnualPrice = (data) => {
         } = promotion;
         switch (outcomeType) {
             case 'PERCENTAGE_DISCOUNT': {
-                if (
-                    quantity >= minProductQuantity &&
-                    isPromotionActive(promotion, instant)
-                ) {
+                if (isPromotionActive(promotion, instant, quantity)) {
                     const durationInMonths = parseInt(
                         duration.replace('P', '').replace('M', ''),
                     );
