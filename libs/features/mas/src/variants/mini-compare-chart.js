@@ -19,17 +19,17 @@ export class MiniCompareChart extends VariantLayout {
   );
 }
 
-disconnectedCallbackHook() {
-    this.card.removeEventListener(
-      EVENT_MERCH_QUANTITY_SELECTOR_CHANGE,
-      this.updatePriceQuantity,
-  );
-}
+  disconnectedCallbackHook() {
+      this.card.removeEventListener(
+        EVENT_MERCH_QUANTITY_SELECTOR_CHANGE,
+        this.updatePriceQuantity,
+    );
+  }
 
-updatePriceQuantity({ detail }) {
-  if (!this.mainPrice || !detail?.option) return;
-  this.mainPrice.dataset.quantity = detail.option;
-}
+  updatePriceQuantity({ detail }) {
+    if (!this.mainPrice || !detail?.option) return;
+    this.mainPrice.dataset.quantity = detail.option;
+  }
   
   getRowMinHeightPropertyName = (index) =>
     `--consonant-merch-card-footer-row-${index}-min-height`;
