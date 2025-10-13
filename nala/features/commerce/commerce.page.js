@@ -25,13 +25,13 @@ export default class CommercePage {
     this.volumeDiscountWithoutQuantityAlternative = page.locator('span[is="inline-price"][data-promotion-code="TDARCH_3LIC_7PT5"][data-quantity="1"] > span.price-alternative');
     this.volumeDiscountWithoutQuantityAnnual = page.locator('span[is="inline-price"][data-promotion-code="TDARCH_3LIC_7PT5"][data-quantity="1"] > span.price-annual');
 
-    this.volumeDiscountWithQuantity = page.locator('span[is="inline-price"][data-promotion-code="TDARCH_3LIC_7PT5"][data-quantity="3"]');
-    this.volumeDiscountWithQuantityStrikeThroughInteger = page.locator('span[is="inline-price"][data-promotion-code="TDARCH_3LIC_7PT5"][data-quantity="3"] span.price-strikethrough > span.price-integer');
-    this.volumeDiscountWithQuantityStrikeThroughDecimals = page.locator('span[is="inline-price"][data-promotion-code="TDARCH_3LIC_7PT5"][data-quantity="3"] span.price-strikethrough > span.price-decimals');
-    this.volumeDiscountWithQuantityAlternativeInteger = page.locator('span[is="inline-price"][data-promotion-code="TDARCH_3LIC_7PT5"][data-quantity="3"] span.price-alternative > span.price-integer');
-    this.volumeDiscountWithQuantityAlternativeDecimals = page.locator('span[is="inline-price"][data-promotion-code="TDARCH_3LIC_7PT5"][data-quantity="3"] span.price-alternative > span.price-decimals');
-    this.volumeDiscountWithQuantityAnnualInteger = page.locator('span[is="inline-price"][data-promotion-code="TDARCH_3LIC_7PT5"][data-quantity="3"] span.price-annual > span.price-integer');
-    this.volumeDiscountWithQuantityAnnualDecimals = page.locator('span[is="inline-price"][data-promotion-code="TDARCH_3LIC_7PT5"][data-quantity="3"] span.price-annual > span.price-decimals');
+    this.volumeDiscountWithQuantity = page.locator('.content > p:nth-child(2) > span[is="inline-price"][data-promotion-code="TDARCH_3LIC_7PT5"]');
+    this.volumeDiscountWithQuantityStrikeThroughInteger = page.locator('.content > p:nth-child(2) > span[is="inline-price"][data-promotion-code="TDARCH_3LIC_7PT5"] span.price-strikethrough > span.price-integer');
+    this.volumeDiscountWithQuantityStrikeThroughDecimals = page.locator('.content > p:nth-child(2) > span[is="inline-price"][data-promotion-code="TDARCH_3LIC_7PT5"] span.price-strikethrough > span.price-decimals');
+    this.volumeDiscountWithQuantityAlternativeInteger = page.locator('.content > p:nth-child(2) > span[is="inline-price"][data-promotion-code="TDARCH_3LIC_7PT5"] span.price-alternative > span.price-integer');
+    this.volumeDiscountWithQuantityAlternativeDecimals = page.locator('.content > p:nth-child(2) > span[is="inline-price"][data-promotion-code="TDARCH_3LIC_7PT5"] span.price-alternative > span.price-decimals');
+    this.volumeDiscountWithQuantityAnnualInteger = page.locator('.content > p:nth-child(2) > span[is="inline-price"][data-promotion-code="TDARCH_3LIC_7PT5"] span.price-annual > span.price-integer');
+    this.volumeDiscountWithQuantityAnnualDecimals = page.locator('.content > p:nth-child(2) > span[is="inline-price"][data-promotion-code="TDARCH_3LIC_7PT5"] span.price-annual > span.price-decimals');
 
     this.strikethroughPrice = page.locator('span[is="inline-price"][data-wcs-osi="msg4m1782IVpeTz8mHd_P_0GG3OSG7XS932oW-7EGuM"] span.price-strikethrough');
     this.strikethroughPriceInteger = page.locator('span[is="inline-price"][data-wcs-osi="msg4m1782IVpeTz8mHd_P_0GG3OSG7XS932oW-7EGuM"] span.price-strikethrough > span.price-integer');
